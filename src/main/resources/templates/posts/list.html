@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판</title>
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 40px auto; padding: 0 16px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border-bottom: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background: #f5f5f5; }
+        td.title { text-align: left; }
+        .top { display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 8px 16px; background: #2563eb; color: #fff; text-decoration: none; border-radius: 6px; }
+        .notice-row { background: #fff7ed; }
+        .notice-row td.title a { font-weight: bold; }
+        .badge { background: #f97316; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+<div class="top">
+    <h1>게시판</h1>
+    <a class="btn" th:href="@{/posts/new}">글쓰기</a>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>조회수</th>
+        <th>작성일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 공지글: 맨 위에 고정, 번호 대신 [공지] 표시 -->
+    <tr class="notice-row" th:each="post : ${notices}">
+        <td><span class="badge">공지</span></td>
+        <td class="title">
+            <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}">공지 제목</a>
+        </td>
+        <td th:text="${post.writer}">작성자</td>
+        <td th:text="${post.viewCount}">0</td>
+        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</td>
+    </tr>
+
+    <!-- 일반글: 화면 번호 = 전체 개수 - 순서 -->
+    <tr th:each="post, stat : ${posts}">
+        <td th:text="${stat.size - stat.index}">1</td>
+        <td class="title">
+            <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}">제목</a>
+        </td>
+        <td th:text="${post.writer}">작성자</td>
+        <td th:text="${post.viewCount}">0</td>
+        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</td>
+    </tr>
+
+    <tr th:if="${#lists.isEmpty(notices) and #lists.isEmpty(posts)}">
+        <td colspan="5">아직 작성된 글이 없어요.</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

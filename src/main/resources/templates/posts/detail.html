@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.title}">글 보기</title>
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 40px auto; padding: 0 16px; }
+        .meta { color: #666; font-size: 14px; border-bottom: 1px solid #ddd; padding-bottom: 12px; }
+        .meta span { margin-right: 16px; }
+        .content { white-space: pre-wrap; line-height: 1.7; padding: 24px 0; min-height: 200px; border-bottom: 1px solid #ddd; }
+        .buttons { display: flex; gap: 8px; margin-top: 20px; }
+        .btn { padding: 8px 16px; border-radius: 6px; border: none; text-decoration: none; font-size: 14px; cursor: pointer; }
+        .btn-gray { background: #e5e7eb; color: #111; }
+        .btn-blue { background: #2563eb; color: #fff; }
+        .btn-red  { background: #dc2626; color: #fff; }
+        .badge { background: #f97316; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 16px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+<h1><span class="badge" th:if="${post.notice}">공지</span> <span th:text="${post.title}">제목</span></h1>
+
+<div class="meta">
+    <span>작성자: <b th:text="${post.writer}">작성자</b></span>
+    <span>조회수: <b th:text="${post.viewCount}">0</b></span>
+    <span>작성일: <b th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</b></span>
+    <span th:if="${post.updatedAt != null and post.updatedAt != post.createdAt}">
+        수정일: <b th:text="${#temporals.format(post.updatedAt, 'yyyy-MM-dd HH:mm')}">날짜</b>
+    </span>
+</div>
+
+<div class="content" th:text="${post.content}">본문</div>
+
+<div class="buttons">
+    <a class="btn btn-gray" th:href="@{/posts}">목록</a>
+    <a class="btn btn-blue" th:href="@{/posts/{id}/edit(id=${post.id})}">수정</a>
+    <form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post"
+          onsubmit="return confirm('정말 삭제할까요?');">
+        <button class="btn btn-red" type="submit">삭제</button>
+    </form>
+</div>
+</body>
+</html>

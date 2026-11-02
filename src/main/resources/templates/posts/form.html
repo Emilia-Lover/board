@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${postId == null} ? '글쓰기' : '글 수정'">글쓰기</title>
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 40px auto; padding: 0 16px; }
+        label { display: block; margin-top: 16px; font-weight: bold; }
+        input[type=text], textarea { width: 100%; padding: 8px; margin-top: 6px; box-sizing: border-box; }
+        input[readonly] { background: #f5f5f5; color: #666; }
+        textarea { height: 240px; }
+        .check { font-weight: normal; cursor: pointer; }
+        .check input { margin-right: 6px; }
+        .error { color: #dc2626; font-size: 14px; margin: 4px 0 0; }
+        .buttons { display: flex; gap: 8px; margin-top: 20px; }
+        .btn { padding: 8px 16px; border: none; border-radius: 6px; font-size: 14px; text-decoration: none; cursor: pointer; }
+        .btn-blue { background: #2563eb; color: #fff; }
+        .btn-gray { background: #e5e7eb; color: #111; }
+    </style>
+</head>
+<body>
+<h1 th:text="${postId == null} ? '글쓰기' : '글 수정'">글쓰기</h1>
+
+<form th:action="${postId == null} ? @{/posts} : @{/posts/{id}/edit(id=${postId})}"
+      th:object="${postForm}" method="post">
+    <label for="title">제목</label>
+    <input type="text" th:field="*{title}">
+    <p class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+
+    <label for="writer">작성자</label>
+    <input type="text" th:field="*{writer}" th:readonly="${postId != null}">
+    <p class="error" th:if="${#fields.hasErrors('writer')}" th:errors="*{writer}"></p>
+
+    <label for="content">내용</label>
+    <textarea th:field="*{content}"></textarea>
+    <p class="error" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></p>
+
+    <label class="check">
+        <input type="checkbox" th:field="*{notice}">공지사항으로 등록
+    </label>
+
+    <div class="buttons">
+        <button class="btn btn-blue" type="submit" th:text="${postId == null} ? '등록' : '수정 완료'">등록</button>
+        <a class="btn btn-gray" th:href="${postId == null} ? @{/posts} : @{/posts/{id}(id=${postId})}">취소</a>
+    </div>
+</form>
+</body>
+</html>
